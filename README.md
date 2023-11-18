@@ -39,13 +39,12 @@ php artisan migrate:fresh --seed
 ```
 
 7. run the app dev.
-   ```bash
+ ```bash
 npm run dev 
-
 ```
 8. You can login user account using the following credentials:
 
-| Role | Email | Password |
+| name | Email | Password |
 |---|---|---|
 | Test User | test@example.com | 1234567890 |
 
