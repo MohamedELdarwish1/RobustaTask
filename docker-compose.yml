@@ -1,0 +1,49 @@
+version: '3'
+
+services:
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: robusta-app
+    container_name: robusta-app
+    depends_on:
+      - mysql
+    networks:
+      - my-network
+    ports:
+      - "8080:80"
+    environment:
+      DB_CONNECTION: mysql
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_DATABASE: robusta
+      DB_USERNAME: root
+      DB_PASSWORD:
+    volumes:
+      - ./src:/var/www/html
+
+  # MySQL Database
+  mysql:
+    image: mysql:latest
+    container_name: robusta-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD:
+      MYSQL_DATABASE: robusta
+      MYSQL_USER: root
+      MYSQL_PASSWORD:
+    networks:
+      - my-network
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+networks:
+  my-network:
+    driver: bridge
+
+volumes:
+  mysql-data:

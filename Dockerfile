@@ -1,7 +1,7 @@
 # Use the official PHP image as a base image
-FROM php:8.0-apache
+FROM php:8.1-apache
 
-# Set the working directory in the container
+## Set the working directory in the container
 WORKDIR /var/www/html
 
 # Install system dependencies
@@ -11,17 +11,21 @@ RUN apt-get update && apt-get install -y \
     libzip-dev \
     && docker-php-ext-install zip
 
+
+# Install the MySQL driver for PHP
+RUN docker-php-ext-install pdo_mysql
+
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Copy the Composer files
 COPY composer.json composer.lock /var/www/html/
 
-# Install project dependencies
-RUN composer install --no-interaction --prefer-dist --optimize-autoloader
-
 # Copy the rest of the application code
 COPY . /var/www/html/
+
+# Install project dependencies
+RUN composer install
 
 # Generate the application key
 RUN php artisan key:generate
@@ -39,4 +43,4 @@ RUN npm install && npm run dev
 EXPOSE 80
 
 # Start the Laravel application
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=80"]
+CMD ["apache2-foreground"]
